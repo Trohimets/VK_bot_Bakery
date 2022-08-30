@@ -1,32 +1,79 @@
+import os
 import vk_api
-from vk_api.longpoll import VkLongPoll, VkEventType
+from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
+from vk_api.utils import get_random_id
+from dotenv import load_dotenv
 
 
-def write_msg(user_id, message):
-    vk.method('messages.send', {'user_id': user_id, 'message': message})
+load_dotenv()
+VK_TOKEN = os.getenv('TOKEN')
+GROUP_ID = os.getenv('GROUP_ID')
 
-token = 'vk1.a.ZXv581Qmb2N5vBK0XGM022HBZhjnV5ieXl5L3GZv4Wp9oqdNuj1cajG5wWA_n7bQ2fReBWjB0CLFiE7x3c202NCo1Yda7zFLdlEf0QtNSBRpUr_1won8B3q2w_-QMDcHKd1iwk2S8df1fKLu-y6Fpq6Bk-2W1ls8-XPMkRKajlwzqWenNM_QLI35T5No12aw'
-vk = vk_api.VkApi(token=token)
+def main():
+    """ Пример использования bots longpoll
+        https://vk.com/dev/bots_longpoll
+    """
 
-# Работа с сообщениями
-longpoll = VkLongPoll(vk)
+    vk_session = vk_api.VkApi(token=VK_TOKEN)
 
-# Основной цикл
-for event in longpoll.listen():
+    longpoll = VkBotLongPoll(vk_session, GROUP_ID)
+    vk = vk_session.get_api()
+    for event in longpoll.listen():
 
-    # Если пришло новое сообщение
-    if event.type == VkEventType.MESSAGE_NEW:
-    
-        # Если оно имеет метку для меня( то есть бота)
-        if event.to_me:
-        
-            # Сообщение от пользователя
-            request = event.text
-            
-            # Каменная логика ответа
-            if request == "привет":
-                write_msg(event.user_id, "Хай")
-            elif request == "пока":
-                write_msg(event.user_id, "Пока((")
-            else:
-                write_msg(event.user_id, "Не поняла вашего ответа...")
+        if event.type == VkBotEventType.MESSAGE_NEW:
+            print('Новое сообщение:')
+
+            print('Для меня от: ', end='')
+            dt = event.obj.message['from_id']
+            print(dt)
+
+            print('Текст:', event.obj.message['text'])
+            print()
+
+            vk.messages.send(
+                user_id=event.obj.message['from_id'],
+
+                random_id=get_random_id(),
+                message=("Новое сообщение - " + event.obj.message['text'])
+            )
+            print('ok')
+
+        elif event.type == VkBotEventType.MESSAGE_REPLY:
+            print('Новое сообщение:')
+
+            print('От меня для: ', end='')
+
+            print(event.obj.peer_id)
+
+            print('Текст:', event.obj.text)
+            print()
+
+        elif event.type == VkBotEventType.MESSAGE_TYPING_STATE:
+            print('Печатает ', end='')
+
+            print(event.obj.from_id, end=' ')
+
+            print('для ', end='')
+
+            print(event.obj.to_id)
+            print()
+
+        elif event.type == VkBotEventType.GROUP_JOIN:
+            print(event.obj.user_id, end=' ')
+
+            print('Вступил в группу!')
+            print()
+
+        elif event.type == VkBotEventType.GROUP_LEAVE:
+            print(event.obj.user_id, end=' ')
+
+            print('Покинул группу!')
+            print()
+
+        else:
+            print(event.type)
+            print()
+
+
+if __name__ == '__main__':
+    main()

@@ -29,13 +29,18 @@ def execute_read_query(connection, query):
         print(f"The error '{e}' occurred")
 
 
-def select_products():
-    select_products = "SELECT name from products"
-    products = execute_read_query(connection, select_products)
+def select_products(category):
+    select_products = f"SELECT name from products JOIN categories ON Products.category = Categories.id WHERE type = '{category}'"
+    items = execute_read_query(connection, select_products)
+    products = []
+    for i in range(len(items)):
+        products += items[i]
     return products
-
 
 def select_categories():
     select_categories = "SELECT type from categories"
-    categories = execute_read_query(connection, select_categories)
+    items = execute_read_query(connection, select_categories)
+    categories = []
+    for i in range(len(items)):
+        categories += items[i]
     return categories

@@ -15,53 +15,62 @@ PTS = os.getenv('PTS')
 SERVER = os.getenv('SERVER')
 
 
-def first_menu(items):
+def generate_menu(items):
     keyboard = VkKeyboard(one_time=True)
-    for i in (len(items)-1):
-            keyboard.add_button(items[i][0], color=VkKeyboardColor.NEGATIVE)
-            keyboard.add_line()
-    keyboard.add_button(items[len(items)][0], color=VkKeyboardColor.NEGATIVE)
+    for i in range(len(items)-1):
+        keyboard.add_button(items[i], color=VkKeyboardColor.NEGATIVE)
+        keyboard.add_line()
+    keyboard.add_button(items[len(items)-1], color=VkKeyboardColor.NEGATIVE)
 
 
 def main():
     """ Главная логика бота
     """
-
     vk_session = vk_api.VkApi(token=VK_TOKEN)
-
     longpoll = VkLongPoll(vk_session)
     vk = vk_session.get_api()
-
-    # keyboard = VkKeyboard(one_time=True)
-    # keyboard.add_button('Торты', color=VkKeyboardColor.NEGATIVE)
-    # keyboard.add_button('Хлеб', color=VkKeyboardColor.POSITIVE)
-    # keyboard.add_line()
-    # keyboard.add_button('Выпечка', color=VkKeyboardColor.SECONDARY)
-    # # keyboard.add_line()
-    # # keyboard.add_vkpay_button(hash="action=transfer-to-group&group_id=215636611")
+    items = select_categories()
+    keyboard = VkKeyboard(one_time=True)
+    for i in range(len(items)-1):
+            keyboard.add_button(items[i], color=VkKeyboardColor.NEGATIVE)
+            keyboard.add_line()
+    keyboard.add_button(items[len(items)-1], color=VkKeyboardColor.NEGATIVE)
 
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
-            vars1 = ['Привет', 'Ку', 'Хай', 'Хеллоу', 'Hi', 'hi']
-            if event.text in vars1:
+            text = event.text
+            low_text = text.lower()
+            vars1 = ['привет', 'ку', 'хай', 'хеллоу', 'hi']
+            if low_text in vars1:
                 if event.from_user:
                     vk.messages.send(
                         user_id=event.user_id,
-                        message='Привет) Для начала работы напиши start',
+                        message='Для начала работы напишите start',
                         random_id=get_random_id()
                         )
             vars2 = ['старт', 'start']
             if event.text in vars2:
-                items = select_categories()
-                first_menu(items)
                 if event.from_user:
                     vk.messages.send(
                         user_id=event.user_id,
                         random_id=get_random_id(),
                         keyboard=keyboard.get_keyboard(),
-                        message='Держи'
+                        message='Выберите категорию товара'
                         )
-
+            if text in items:
+                products = select_products(text)
+                keyboard = VkKeyboard(one_time=True)
+                for i in range(len(products)-1):
+                    keyboard.add_button(products[i], color=VkKeyboardColor.POSITIVE)
+                    keyboard.add_line()
+                keyboard.add_button(items[len(products)-1], color=VkKeyboardColor.POSITIVE)
+                if event.from_user:
+                    vk.messages.send(
+                        user_id=event.user_id,
+                        random_id=get_random_id(),
+                        keyboard=keyboard.get_keyboard(),
+                        message='Выберите товар из представленных ниже'
+                        )
 
 if __name__ == '__main__':
     main()

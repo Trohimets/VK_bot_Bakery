@@ -17,13 +17,10 @@ SERVER = os.getenv('SERVER')
 
 def first_menu(items):
     keyboard = VkKeyboard(one_time=True)
-    for i in len(items):
-        for j in 1:
-            button = items[i][0]
-            keyboard.add_button('Торты', color=VkKeyboardColor.NEGATIVE)
-            keyboard.add_button('Хлеб', color=VkKeyboardColor.POSITIVE)
-    keyboard.add_line()
-    keyboard.add_button('Выпечка', color=VkKeyboardColor.SECONDARY)
+    for i in (len(items)-1):
+            keyboard.add_button(items[i][0], color=VkKeyboardColor.NEGATIVE)
+            keyboard.add_line()
+    keyboard.add_button(items[len(items)][0], color=VkKeyboardColor.NEGATIVE)
 
 
 def main():
@@ -35,13 +32,13 @@ def main():
     longpoll = VkLongPoll(vk_session)
     vk = vk_session.get_api()
 
-    keyboard = VkKeyboard(one_time=True)
-    keyboard.add_button('Торты', color=VkKeyboardColor.NEGATIVE)
-    keyboard.add_button('Хлеб', color=VkKeyboardColor.POSITIVE)
-    keyboard.add_line()
-    keyboard.add_button('Выпечка', color=VkKeyboardColor.SECONDARY)
+    # keyboard = VkKeyboard(one_time=True)
+    # keyboard.add_button('Торты', color=VkKeyboardColor.NEGATIVE)
+    # keyboard.add_button('Хлеб', color=VkKeyboardColor.POSITIVE)
     # keyboard.add_line()
-    # keyboard.add_vkpay_button(hash="action=transfer-to-group&group_id=215636611")
+    # keyboard.add_button('Выпечка', color=VkKeyboardColor.SECONDARY)
+    # # keyboard.add_line()
+    # # keyboard.add_vkpay_button(hash="action=transfer-to-group&group_id=215636611")
 
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:
@@ -55,6 +52,8 @@ def main():
                         )
             vars2 = ['старт', 'start']
             if event.text in vars2:
+                items = select_categories()
+                first_menu(items)
                 if event.from_user:
                     vk.messages.send(
                         user_id=event.user_id,

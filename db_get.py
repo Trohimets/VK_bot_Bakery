@@ -37,6 +37,7 @@ def select_products(category):
         products += items[i]
     return products
 
+
 def select_categories():
     select_categories = "SELECT type from categories"
     items = execute_read_query(connection, select_categories)
@@ -44,3 +45,21 @@ def select_categories():
     for i in range(len(items)):
         categories += items[i]
     return categories
+
+
+def select_product(product):
+    select_product = f"SELECT description, image from products WHERE name = '{product}'"
+    items = execute_read_query(connection, select_product)
+    product = []
+    for i in range(len(items)):
+        product += items[i]
+    return product
+
+
+def select_all_products():
+    select_products = "SELECT name from products"
+    items = execute_read_query(connection, select_products)
+    products = []
+    for i in range(len(items)):
+        products += items[i]
+    return products

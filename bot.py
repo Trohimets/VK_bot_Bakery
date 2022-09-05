@@ -80,7 +80,7 @@ def main():
                         user_id=event.user_id,
                         random_id=get_random_id(),
                         keyboard=keyboard.get_keyboard(),
-                        message=f'Описание товара: {product[0]}'
+                        message=f'Описание товара: {product[0]}, фотография: {product[1]}'
                         )
 
 

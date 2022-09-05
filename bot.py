@@ -1,10 +1,15 @@
 import os
 import vk_api
-from vk_api.longpoll import VkLongPoll, VkEventType
-from vk_api.keyboard import VkKeyboard, VkKeyboardColor
-from vk_api.utils import get_random_id
+
 from dotenv import load_dotenv
-from db_get import select_all_products, select_products, select_categories, select_product
+
+from vk_api.keyboard import VkKeyboard, VkKeyboardColor
+from vk_api.longpoll import VkLongPoll, VkEventType
+from vk_api.utils import get_random_id
+
+from db_get import select_all_products, select_products
+from db_get import select_categories, select_product
+
 
 load_dotenv()
 VK_TOKEN = os.getenv('TOKEN')
@@ -15,26 +20,12 @@ PTS = os.getenv('PTS')
 SERVER = os.getenv('SERVER')
 
 
-def generate_menu(items):
-    keyboard = VkKeyboard(one_time=True)
-    for i in range(len(items)-1):
-        keyboard.add_button(items[i], color=VkKeyboardColor.NEGATIVE)
-        keyboard.add_line()
-    keyboard.add_button(items[len(items)-1], color=VkKeyboardColor.NEGATIVE)
-
-
 def main():
     """ Главная логика бота
     """
     vk_session = vk_api.VkApi(token=VK_TOKEN)
     longpoll = VkLongPoll(vk_session)
     vk = vk_session.get_api()
-    # items = select_categories()
-    # keyboard = VkKeyboard(one_time=True)
-    # for i in range(len(items)-1):
-    #         keyboard.add_button(items[i], color=VkKeyboardColor.NEGATIVE)
-    #         keyboard.add_line()
-    # keyboard.add_button(items[len(items)-1], color=VkKeyboardColor.NEGATIVE)
 
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text:

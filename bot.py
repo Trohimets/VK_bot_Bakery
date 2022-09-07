@@ -7,6 +7,9 @@ from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.utils import get_random_id
 
+from db import create_connection, execute_query
+from db import create_categories_table, create_products_table
+from db import create_categories, create_products
 from db_get import select_all_products, select_products
 from db_get import select_categories, select_product
 
@@ -18,6 +21,15 @@ KEY = os.getenv('KEY')
 TS = os.getenv('TS')
 PTS = os.getenv('PTS')
 SERVER = os.getenv('SERVER')
+connection = create_connection("D:\dev\VK_bot_Bakery\db.sqlite")
+
+#Создаем 2 таблицы в БД, Категории и Продукты:
+execute_query(connection, create_categories_table)  
+execute_query(connection, create_products_table)  
+
+# #Создаем в таблицах записи:
+# execute_query(connection, create_categories) 
+# execute_query(connection, create_products)  
 
 
 def main():
@@ -61,7 +73,7 @@ def main():
                 for i in range(len(products)-1):
                     keyboard.add_button(products[i], color=VkKeyboardColor.POSITIVE)
                     keyboard.add_line()
-                keyboard.add_button(items[len(products)-1], color=VkKeyboardColor.POSITIVE)
+                keyboard.add_button(products[len(products)-1], color=VkKeyboardColor.POSITIVE)
                 keyboard.add_line()
                 keyboard.add_button('назад', color=VkKeyboardColor.PRIMARY)
                 if event.from_user:

@@ -21,16 +21,15 @@ KEY = os.getenv('KEY')
 TS = os.getenv('TS')
 PTS = os.getenv('PTS')
 SERVER = os.getenv('SERVER')
-connection = create_connection("D:\dev\VK_bot_Bakery\db.sqlite")
+connection = create_connection("db.sqlite")
 
 #Создаем 2 таблицы в БД, Категории и Продукты:
 execute_query(connection, create_categories_table)  
 execute_query(connection, create_products_table)  
 
-# #Создаем в таблицах записи:
-# execute_query(connection, create_categories) 
-# execute_query(connection, create_products)  
-
+#Создаем в таблицах записи:
+execute_query(connection, create_categories) 
+execute_query(connection, create_products)
 
 def main():
     """ Главная логика бота

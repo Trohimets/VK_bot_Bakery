@@ -14,7 +14,7 @@ def create_connection(path):
     return connection
 
 
-connection = create_connection("D:\dev\VK_bot_Bakery\db.sqlite")
+connection = create_connection("db.sqlite")
 
 
 # Функция для извлечения данных из БД

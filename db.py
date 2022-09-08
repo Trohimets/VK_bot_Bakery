@@ -13,7 +13,7 @@ def create_connection(path):
 
     return connection
 
-connection = create_connection("D:\dev\VK_bot_Bakery\db.sqlite")
+connection = create_connection("db.sqlite")
 
 #Функция создания таблицы в БД
 def execute_query(connection, query):
@@ -70,11 +70,11 @@ VALUES
   ("Хлеб Мариинский", "с изюмом и кориандром", 'link to image', 3);
 """
 
-#Создаем 2 таблицы в БД, Категории и Продукты:
-execute_query(connection, create_categories_table)  
-execute_query(connection, create_products_table)  
+# #Создаем 2 таблицы в БД, Категории и Продукты:
+# execute_query(connection, create_categories_table)  
+# execute_query(connection, create_products_table)  
 
-#Создаем в таблицах записи:
-execute_query(connection, create_categories) 
-execute_query(connection, create_products)  
+# #Создаем в таблицах записи:
+# execute_query(connection, create_categories) 
+# execute_query(connection, create_products)  
 
